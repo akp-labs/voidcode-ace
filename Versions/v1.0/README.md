@@ -74,6 +74,7 @@ Some browser security policies may restrict local file behavior.
 - No frameworks beyond Ace Editor
 - Direct DOM and API usage
 - Minimal UI inspired by classic desktop editors
+- Best suited for mobile phones and tabs
 
 ---
 
