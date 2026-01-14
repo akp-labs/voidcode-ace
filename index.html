@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoidCode</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/ace.min.css">
+<style>
+:root {
+  --chrome-bg: #2c2b2b;
+  --panel-bg: #1f1e1e;
+  --border-subtle: #2a2a2a;
+  --text: #ffffff;
+  --text-muted: #cfcfcf;
+  --accent: #00ff00;
+  --hover: #094771;
+}
+
+* { box-sizing: border-box; margin:0; padding:0; }
+
+body {
+  margin: 2vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--panel-bg);
+  color: var(--text);
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.head-container {
+  background-color: var(--chrome-bg);
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border: 1px solid var(--border-subtle);
+}
+
+.heading { color: var(--accent); font-size: 12px; flex-grow:1; }
+
+#lang-selector {
+  background-color: var(--panel-bg);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 50px;
+}
+
+hr { height: 1px; background-color: var(--border-subtle); border:none; }
+
+.toolbar {
+  background-color: var(--chrome-bg);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  height: 36px;
+  gap: 2px;
+  padding: 0 2px;
+  position: relative;
+}
+
+.toolbar-btn {
+  flex:1; height:100%; background:transparent; border:none; color:#bdbdbd; cursor:pointer; font-size:13px;
+}
+.toolbar-btn:hover { background:#1f1f1f; color:#fff; }
+
+.fileName {
+  background-color: var(--chrome-bg);
+  border: 1px solid var(--border-subtle);
+  display:flex; align-items:center;
+  height:32px;
+  padding:0 8px;
+  color:#aaaaaa;
+  font-size:12px;
+}
+
+.popup-menu {
+  position: fixed;
+  background: #252526;
+  border:1px solid #3c3c3c;
+  border-radius:3px;
+  padding:4px 0;
+  display:none;
+  min-width:180px;
+  max-width:92vw;
+  max-height:60vh;
+  overflow-y:auto;
+  box-shadow:0 2px 10px rgba(0,0,0,0.55);
+  z-index:9999;
+  font-size:13px;
+  color:var(--text-muted);
+  margin-top:4px;
+}
+
+.popup-menu ul { list-style:none; margin:0; padding:0; }
+.popup-menu li { padding:6px 12px; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.popup-menu li:hover { background:var(--hover); color:#fff; }
+
+.editor, .Iframe {
+  flex-grow:1;
+  min-height:400px;
+  border:1px solid var(--border-subtle);
+  border-radius:4px;
+  background:#1e1e1e;
+}
+
+.Iframe { display:none; background:#524c4c; }
+#filePicker { display:none; }
+@media (max-width:640px){
+  body { margin:1vh; }
+  .toolbar { height:34px; }
+  .toolbar-btn { font-size:12px; }
+  #lang-selector { font-size:11px; padding:2px 6px; }
+  .popup-menu { min-width:150px; max-height:55vh; }
+}
+</style>
+</head>
+<body>
+
+<div class="head-container">
+  <h6 class="heading">VoidCode ... to code...</h6>
+  <select id="lang-selector" name="language" title="Select programming language">
+    <option value="html">HTML + JS + CSS</option>
+    <option value="javascript">JavaScript</option>
+    <option value="css">CSS</option>
+    <option value="python">Python</option>
+    <option value="java">Java</option>
+    <option value="c_cpp">C / C++</option>
+  </select>
+</div>
+<hr>
+
+<div class="toolbar">
+  <button type="button" class="toolbar-btn" data-menu="fileMenu">File</button>
+  <button type="button" class="toolbar-btn" data-menu="editMenu">Edit</button>
+  <button type="button" class="toolbar-btn" data-menu="viewMenu">View</button>
+  <button type="button" class="toolbar-btn" data-menu="moreMenu">More</button>
+  <button type="button" class="toolbar-btn" data-menu="helpMenu">Help</button>
+  <button type="button" class="toolbar-btn" data-menu="aboutMenu">About</button>
+
+  <div class="popup-menu" id="fileMenu"><ul>
+    <li>New File</li><li>Open Project</li><li>Save</li><li>Exit</li>
+  </ul></div>
+  <div class="popup-menu" id="editMenu"><ul>
+    <li>Undo</li><li>Redo</li><li>Cut</li><li>Copy</li><li>Paste</li><li>Clear</li><li>Find</li><li>Replace</li>
+  </ul></div>
+  <div class="popup-menu" id="viewMenu"><ul>
+    <li>Word wrap</li><li>Font Size</li><li>Fullscreen</li><li>Theme</li><li>Go To Line</li><li>Run Html</li><li>Run In Iframe</li>
+  </ul></div>
+  <div class="popup-menu" id="moreMenu">
+  <ul>
+    <li>Settings</li>
+    <li>Reload IDE</li>
+  </ul>
+</div>
+  <div class="popup-menu" id="helpMenu"><ul>
+    <li>Documentation</li><li>Keyboard Shortcuts</li>
+  </ul></div>
+  <div class="popup-menu" id="aboutMenu"><ul>
+    <li>About VoidCode</li><li>Version 1.0</li>
+  </ul></div>
+</div>
+
+<div class="fileName"></div>
+<div class="editor" id="editor"></div>
+<iframe class="Iframe"></iframe>
+<input type="file" title="File picker" id="filePicker" placeholder="File is imported through this input..." accept=".html,.htm,.txt,.js,.css,.py,.java,.c,.cpp">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/ace.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/ext-language_tools.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/ext-command_palette.min.js"></script>
+<script>
+let touchstartY = 0;
+window.addEventListener('touchstart', e => touchstartY = e.touches[0].clientY);
+window.addEventListener('touchmove', e => {
+  const touchY = e.touches[0].clientY;
+  if (touchY - touchstartY > 100 && window.scrollY === 0) e.preventDefault();
+}, { passive: false });
+
+const editor = ace.edit("editor");
+editor.setTheme("ace/theme/dracula");
+editor.session.setMode("ace/mode/html");
+editor.setOptions({
+  enableBasicAutocompletion:true,
+  enableSnippets:true,
+  enableLiveAutocompletion:true,
+  highlightActiveLine:true,
+  highlightSelectedWord:true,
+  showPrintMargin:false,
+  wrap:true
+});
+
+
+const langMap = {
+  html: "ace/mode/html",
+  javascript: "ace/mode/javascript",
+  css: "ace/mode/css",
+  python: "ace/mode/python",
+  java: "ace/mode/java",
+  c_cpp: "ace/mode/c_cpp"
+};
+document.getElementById("lang-selector").addEventListener("change", e => {
+  editor.session.setMode(langMap[e.target.value]);
+});
+
+const fileNameBox = document.querySelector('.fileName');
+const filePicker = document.getElementById('filePicker');
+
+function newFile(){ editor.setValue(""); fileNameBox.textContent="untitled.html"; }
+function openFile(){ filePicker.click(); }
+filePicker.addEventListener("change", async e => {
+  const file = e.target.files[0]; if(!file) return;
+  const text = await file.text();
+  editor.setValue(text);
+  fileNameBox.textContent = file.name;
+});
+function saveFile(){
+  const blob = new Blob([editor.getValue()], {type:"text/plain"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = fileNameBox.textContent || "untitled.txt";
+  a.click();
+}
+
+
+// Clipboard
+function handleCopy(){ const text = editor.getSelectedText(); if(text) navigator.clipboard?.writeText(text).catch(()=>copyFallback(text)); }
+function handleCut(){ const text = editor.getSelectedText(); if(text){ handleCopy(); editor.session.replace(editor.getSelectionRange(), ""); } }
+function handlePaste(){ navigator.clipboard?.readText().then(t=>{ if(t) editor.session.replace(editor.getSelectionRange(), t); }).catch(pasteFallback); }
+function copyFallback(text){ const ta=document.createElement("textarea"); ta.style.position="fixed"; ta.style.opacity=0; ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); }
+function pasteFallback(){ const ta=document.createElement("textarea"); ta.style.position="fixed"; ta.style.opacity=0; document.body.appendChild(ta); ta.focus(); alert("Press Ctrl+V to paste, then Enter."); ta.addEventListener("keydown", e=>{ if(e.key==="Enter"){ const t=ta.value; document.body.removeChild(ta); if(t) editor.session.replace(editor.getSelectionRange(), t); } }); }
+
+// Run
+let iframeVisible=false;
+function runHtml(){ const code=editor.getValue(); const win=window.open("", "_blank"); win.document.write(code); win.document.close(); }
+function runInIframe(){
+  const iframe=document.querySelector(".Iframe");
+  const editorDiv=document.querySelector(".editor");
+  if(!iframeVisible){
+    editorDiv.style.display="none";
+    iframe.style.display="block";
+    const doc=iframe.contentDocument||iframe.contentWindow.document;
+    doc.open(); doc.write(editor.getValue()); doc.close();
+    iframeVisible=true;
+  } else { iframe.style.display="none"; editorDiv.style.display="flex"; iframeVisible=false; }
+}
+
+// Toolbar
+const buttons=document.querySelectorAll(".toolbar-btn");
+const menus=document.querySelectorAll(".popup-menu");
+buttons.forEach(btn=>{
+  btn.addEventListener("click", e=>{
+    const menu=document.getElementById(btn.dataset.menu);
+    menus.forEach(m=>m.style.display="none");
+    const rect=btn.getBoundingClientRect();
+    let top=rect.bottom, left=rect.left;
+    menu.style.display="block";
+    const mRect=menu.getBoundingClientRect();
+    if(left+mRect.width>window.innerWidth) left=window.innerWidth-mRect.width-5;
+    if(top+mRect.height>window.innerHeight) top=rect.top-mRect.height;
+    menu.style.top=top+"px"; menu.style.left=left+"px";
+    e.stopPropagation();
+  });
+});
+document.addEventListener("click", ()=>menus.forEach(m=>m.style.display="none"));
+
+// Menu actions
+document.querySelectorAll("#fileMenu li").forEach(li=>{
+  li.addEventListener("click", ()=>{
+    if(li.textContent==="New File") newFile();
+    if(li.textContent==="Open Project") openFile();
+    if(li.textContent==="Save") saveFile();
+    if(li.textContent==="Exit") window.close();
+  });
+});
+document.querySelectorAll("#editMenu li").forEach(li=>{
+  li.addEventListener("click", ()=>{
+    if(li.textContent==="Undo") editor.undo();
+    if(li.textContent==="Redo") editor.redo();
+    if(li.textContent==="Copy") handleCopy();
+    if(li.textContent==="Cut") handleCut();
+    if(li.textContent==="Paste") handlePaste();
+    if(li.textContent==="Clear") editor.setValue("");
+    if(li.textContent==="Find") editor.execCommand("find");
+    if(li.textContent==="Replace") editor.execCommand("replace");
+  });
+});
+const themeMap={
+  dracula:"ace/theme/dracula",monokai:"ace/theme/monokai",github:"ace/theme/github",
+  twilight:"ace/theme/twilight",solarized_dark:"ace/theme/solarized_dark",
+  solarized_light:"ace/theme/solarized_light",chrome:"ace/theme/chrome"
+};
+document.querySelectorAll("#viewMenu li").forEach(li=>{
+  li.addEventListener("click", ()=>{
+    if(li.textContent==="Word wrap") editor.session.setOption("wrap",!editor.session.getOption("wrap"));
+    if(li.textContent==="Font Size"){ 
+                       let s=parseInt(prompt("Font size:",14)); if(s){ editor.container.style.fontSize=s+"px"; editor.resize(); } }
+    if(li.textContent==="Fullscreen") document.body.requestFullscreen();
+    if(li.textContent==="Theme"){
+                       let t=prompt("Enter theme: dracula, monokai, github, twilight, solarized_dark, solarized_light, chrome","dracula"); if(themeMap[t]){ editor.setTheme(themeMap[t]); editor.resize(); }else alert("Theme not found!"); }
+    if(li.textContent==="Go To Line"){
+                        let l=parseInt(prompt("Line number:",1)); if(l) editor.gotoLine(l); }
+    if(li.textContent==="Run Html") runHtml();
+    if(li.textContent==="Run In Iframe") runInIframe();
+  });
+});
+document.querySelectorAll("#moreMenu li").forEach(li=>{
+  li.addEventListener("click", ()=>{
+        if(li.textContent==="Command Palette"){
+        alert("Use Ctrl+Shift+P or F1 to open Command Palette. If you are on Android, look for 'palette' under the three dots menu appearing on the rightmost side of your current line.");
+    }
+    if(li.textContent==="Settings") alert("Not available yet...");
+    if(li.textContent==="Reload IDE") location.reload();
+  });
+});
+
+document.querySelectorAll("#helpMenu li").forEach(li=>{
+  li.addEventListener("click", ()=>{
+    if(li.textContent==="Keyboard Shortcuts") alert("Use Ctrl+S, Ctrl+O, Ctrl+F, etc.");
+    if(li.textContent==="Documentation") window.open("https://ace.c9.io/#nav=howto","_blank");
+  });
+});
+document.querySelectorAll("#aboutMenu li").forEach(li=>{
+  li.addEventListener("click", ()=>{
+    if(li.textContent==="About VoidCode") alert("VoidCode IDE\nA lightweight web-based code editor using Ace Editor.\n\nAce Distribution\n(c) 2024 VoidCode");
+    if(li.textContent==="Version 1.0") alert("VoidCode IDE\nVersion 1.0\n\nReleased June 2024.\nNext updates coming soon!");
+  });
+});
+
+// Shortcuts
+window.addEventListener("keydown", e=>{
+  if(e.ctrlKey&&e.key==="s"){ e.preventDefault(); saveFile(); }
+  if(e.ctrlKey&&e.key==="o"){ e.preventDefault(); openFile(); }
+  if(e.ctrlKey&&e.key==="n"){ e.preventDefault(); newFile(); }
+  if(e.key==="F11"){ e.preventDefault(); document.body.requestFullscreen(); }
+  if(e.ctrlKey&&e.key==="f"){ e.preventDefault(); alert("Use browser find (Ctrl+F)"); }
+});
+</script>
+
+</body>
+</html>
