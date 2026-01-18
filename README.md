@@ -1,12 +1,10 @@
-# VoidCode – Lightweight Web Code Editor
+# VoidCode Ace – Lightweight Web Code Editor
 
 VoidCode Ace — a high-performance, lightweight code editor designed for speed, precision, and versatility. Built to handle multiple languages with a sleek interface, it empowers developers to write, test(HTML only), and manage code efficiently while keeping the VoidCode ecosystem vibe alive.
 
 VoidCode Ace is a compact, browser-based code editor built using HTML, CSS, and JavaScript, powered internally by the Ace Editor engine.
-
 It is designed for learners, hobbyists, and developers who want a **fast, portable, low-storage editor** for writing and testing code without installing heavy IDEs.
-
-VoidCode Ace runs entirely on the client side, works offline, and focuses on clarity, control, and direct interaction with code.
+It runs entirely on the client side, works offline(once cached), and focuses on clarity, control, and direct interaction with code.
 
 ⚠️ Note: This project is intentionally minimal and evolving. Features, behaviors, and internal logic may be incomplete or experimental. Bugs and gaps are expected and welcome to be explored.
 
@@ -37,7 +35,7 @@ VoidCode Ace runs entirely on the client side, works offline, and focuses on cla
 
 ### Repository Structure
 
-All project versions are organized under the `Versions/` directory.  
+All project versions are organized under the `versions/` directory.  
 Each version folder contains its own documentation explaining available formats, features, and usage instructions.
 
 ---
@@ -46,7 +44,7 @@ Each version folder contains its own documentation explaining available formats,
 
 No installation required.
 
-1. Open a version inside `Versions/`
+1. Open a version inside `versions/`
 2. Choose **single-file** or **modular**
 3. Open the HTML file in any modern browser
 4. Start coding immediately

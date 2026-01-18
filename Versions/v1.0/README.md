@@ -1,4 +1,4 @@
-# VoidCode – v1.0
+# VoidCode Ace – v1.0
 
 Version 1.0 is the **first stable public release** of VoidCode Ace distribution.
 
@@ -12,7 +12,7 @@ It is intentionally designed to remain simple while exposing enough internal log
 
 ### 1. Standalone Build (`single-file/`)
 
-**VoidCodeIDE_dA_v1.0.html**
+**voidcode-ace.html**
 
 - Entire editor contained in a single HTML file
 - Includes UI, styles, logic, and Ace Editor integration
