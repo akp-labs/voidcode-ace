@@ -33,7 +33,7 @@ It runs entirely on the client side, works offline(once cached), and focuses on 
 - more...
 ---
 
-### Repository Structure
+## Repository Structure
 
 All project versions are organized under the `versions/` directory.  
 Each version folder contains its own documentation explaining available formats, features, and usage instructions.
